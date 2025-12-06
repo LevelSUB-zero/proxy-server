@@ -16,7 +16,7 @@ app.get("/gemini", async (req, res) => {
     const payload = {
         contents: [
             {
-                parts: [{ text: userText }]
+                parts: [{ text: userText + "\n\n(Respond in plain text, no markdown, use UTF-8 encoding)" }]
             }
         ]
     };
@@ -34,6 +34,7 @@ app.get("/gemini", async (req, res) => {
 
     try {
         const text = data.candidates[0].content.parts[0].text;
+        res.setHeader("Content-Type", "text/plain; charset=utf-8");
         res.send(text);
     } catch (err) {
         console.error("Error details:", err);
