@@ -33,9 +33,18 @@ app.get("/gemini", async (req, res) => {
     const data = await response.json();
 
     try {
-        const text = data.candidates[0].content.parts[0].text;
-        res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        res.send(`<result>${text.trim()}</result>`);
+        let text = data.candidates[0].content.parts[0].text.trim();
+
+        // Escape special XML characters
+        text = text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
+
+        res.setHeader("Content-Type", "text/xml; charset=utf-8");
+        res.send(`<result>${text}</result>`);
     } catch (err) {
         console.error("Error details:", err);
         console.log("API Response:", JSON.stringify(data, null, 2));
