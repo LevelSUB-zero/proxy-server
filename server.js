@@ -35,7 +35,7 @@ app.get("/gemini", async (req, res) => {
     try {
         const text = data.candidates[0].content.parts[0].text;
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        res.send(`<result>${text}</result>`);
+        res.send(`<result>${text.trim()}</result>`);
     } catch (err) {
         console.error("Error details:", err);
         console.log("API Response:", JSON.stringify(data, null, 2));
