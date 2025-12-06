@@ -33,10 +33,10 @@ app.get("/gemini", async (req, res) => {
     const data = await response.json();
 
     try {
-        let text = data.candidates[0].content.parts[0].text.trim();
+        let answer = data.candidates?.[0]?.content?.parts?.[0]?.text || "No reply.";
 
-        // Escape special XML characters
-        text = text
+        // XML-escape
+        answer = answer
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
@@ -44,11 +44,11 @@ app.get("/gemini", async (req, res) => {
             .replace(/'/g, "&apos;");
 
         res.setHeader("Content-Type", "text/xml; charset=utf-8");
-        res.send(`<result>${text}</result>`);
+        res.status(200).send(`<result>${answer.trim()}</result>`);
     } catch (err) {
         console.error("Error details:", err);
-        console.log("API Response:", JSON.stringify(data, null, 2));
-        res.status(500).send("AI error. Check console for details.");
+        res.setHeader("Content-Type", "text/xml; charset=utf-8");
+        res.status(200).send(`<result>AI error.</result>`);
     }
 });
 
