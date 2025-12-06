@@ -1,4 +1,5 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
@@ -21,7 +22,7 @@ app.get("/gemini", async (req, res) => {
     };
 
     const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent?key=${API_KEY}`,
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -35,7 +36,9 @@ app.get("/gemini", async (req, res) => {
         const text = data.candidates[0].content.parts[0].text;
         res.send(text);
     } catch (err) {
-        res.send("AI error.");
+        console.error("Error details:", err);
+        console.log("API Response:", JSON.stringify(data, null, 2));
+        res.status(500).send("AI error. Check console for details.");
     }
 });
 
